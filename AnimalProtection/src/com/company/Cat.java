@@ -4,12 +4,16 @@ import java.util.Random;
 
 public class Cat extends Animal {
 
-    Random random = new Random();
+    private Random random = new Random();
 
-    int healCost = super.setHealCost(this.random.nextInt(6));
-
-    @Override
-    public int getHealCost() {
-        return this.healCost;
+    Cat(){
+        super("Cat");
+        super.setHealCost(this.random.nextInt(6));
     }
+
+    Cat(String name){
+        super(name);
+        super.setHealCost(this.random.nextInt(6));
+    }
+
 }

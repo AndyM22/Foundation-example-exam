@@ -10,7 +10,7 @@ public class AnimalShelter {
     private ArrayList<String> adoptersName = new ArrayList<>();
     private Random random = new Random();
 
-    AnimalShelter(){
+    AnimalShelter() {
 
     }
 
@@ -27,17 +27,16 @@ public class AnimalShelter {
         return this.animals.size();
     }
 
-    public int heal(){
-        int numberOfHealed = 0;
+    public int heal() {
         for (int i = 0; i < this.animals.size(); i++) {
-            if ((this.animals.get(i).isHealthy() != true) && (this.animals.get(i).getHealCost() < this.budget)){
-                this.animals.get(i).heal();
-                this.budget = this.budget - this.animals.get(i).getHealCost();
-                numberOfHealed = 1;
-            } else {
-                numberOfHealed = 0;
+            Animal currentAnimal = this.animals.get(i);
+            if ((currentAnimal.isHealthy() == false) && (currentAnimal.getHealCost() < this.budget)) {
+                currentAnimal.heal();
+                this.budget -= currentAnimal.getHealCost();
+                return 1;
             }
-        } return numberOfHealed;
+        }
+        return 0;
     }
 
     public void addAdopter(String name) {
@@ -45,21 +44,52 @@ public class AnimalShelter {
     }
 
     public String findNewOwner() {
-        Animal animal = this.animals.get(this.random.nextInt(this.animals.size()));
-        this.animals.remove(animal);
-        String animalName = this.animals.get(this.random.nextInt(this.animals.size())).getName();
-        String ownerName = this.adoptersName.get(this.random.nextInt(this.adoptersName.size()));
-        this.adoptersName.remove(ownerName);
-        String newPair = animalName + " + " + ownerName;
-        return newPair;
+
+        ArrayList<Animal> adoptableAnimals = new ArrayList<>();
+
+        for (int i = 0; i < this.animals.size(); i++) {
+            Animal currentAnimal = this.animals.get(i);
+            if (currentAnimal.isAdoptable()) {
+                adoptableAnimals.add(currentAnimal);
+            }
+        }
+
+        if ((adoptableAnimals.size() != 0) && (this.adoptersName.size() != 0)) {
+
+            Animal animal = adoptableAnimals.get(this.random.nextInt(adoptableAnimals.size()));
+            this.animals.remove(animal);
+            String ownerName = this.adoptersName.get(this.random.nextInt(this.adoptersName.size()));
+            this.adoptersName.remove(ownerName);
+            return animal.getName() + " + " + ownerName;
+
+        } else {
+            return "Not enough animals or adopters";
+        }
+
     }
 
-    public int earnDonation(int number) {
+    public String earnDonation(int number) {
         this.budget = this.budget + number;
-        return this.budget;
+        return "Budget: " + this.budget + " €";
     }
 
-   /* public String toString(){
-        String string = "Budget: " + this.budget + "€,\n" + "There are " + this.animals.size() + " animal(s) and " + this.adoptersName.size() + " potential adopter(s)\n" + this.animals.get(0).isHealthy();*/
+    public String toString() {
 
+        String adoptableAnimals = "";
+        String undoptableAnimals = "";
+
+        for (int i = 0; i < this.animals.size(); i++) {
+            Animal currentAnimal = this.animals.get(i);
+            if (currentAnimal.isAdoptable()) {
+                String isAdoptable = currentAnimal.getName() + " is healthy and adoptable\n";
+                adoptableAnimals = adoptableAnimals.concat(isAdoptable);
+            } else {
+                String isNotAdoptable = currentAnimal.getName() + " is not healthy (healing would cost: " + currentAnimal.getHealCost() + " €) and not adoptable\n";
+                undoptableAnimals = undoptableAnimals.concat(isNotAdoptable);
+            }
+        }
+
+        return "Budget: " + this.budget + "€,\n" + "There are " + this.animals.size() + " animal(s) and " + this.adoptersName.size() + " potential adopter(s)\n" + undoptableAnimals + adoptableAnimals;
+
+    }
 }

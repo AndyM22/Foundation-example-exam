@@ -7,13 +7,20 @@ public class Animal {
     private int healCost;
     private String name = "Animal";
 
-    public int getHealCost() {
-        return healCost;
+    Animal(){
+
     }
 
-    public int setHealCost(int healCost) {
+    Animal(String name) {
+        this.name = name;
+    }
+
+    public int getHealCost() {
+        return this.healCost;
+    }
+
+    public void setHealCost(int healCost) {
         this.healCost = healCost;
-        return healCost;
     }
 
     public boolean isHealthy() {
@@ -21,33 +28,22 @@ public class Animal {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    Animal(){
-        this.isHealthy = false;
-    }
-
-    Animal(String name){
-        this.name = name;
-    }
-
-    public void heal(){
+    public void heal() {
         this.isHealthy = true;
     }
 
-    public boolean isAdoptable(){
+    public boolean isAdoptable() {
         return this.isHealthy;
     }
 
-    public String toString(){
-        if (this.isHealthy == true){
-            String string = this.name + " is healthy, and adoptable";
-            return string;
-        } else {
-            String string = this.name + " is not healthy (" + this.healCost + "€), and not adoptable";
-            return string;
+    public String toString() {
+        if (isAdoptable()) {
+            return this.name + " is healthy, and adoptable";
         }
+        return this.name + " is not healthy (" + this.healCost + "€), and not adoptable";
     }
 
 }
